@@ -1,16 +1,27 @@
+import os
 import sys
+import string
+import random
 
-from tempfile import NamedTemporaryFile
+from tempfile import mkdtemp
 from typing import List, Any
+
+_chars = string.ascii_lowercase + string.digits
+
+
+def _random_str(length) -> str:
+    return ''.join(random.SystemRandom().choice(_chars) for _ in range(length))
 
 
 def create_files(num_files: int) -> int:
     try:
         files: List[Any] = []
         open_file_count = 0
+        tmp = mkdtemp()
         for _ in range(num_files):
             # add file to a list so that it doesn't get GC-d
-            files.append(NamedTemporaryFile())  # type: ignore
+            files.append(open(os.path.join(tmp, _random_str(16)),
+                              'w'))  # type: ignore
             open_file_count += 1
     except IOError as ioe:
         print('Caught', ioe)
