@@ -9,10 +9,9 @@ def create_files(num_files: int) -> int:
         files: List[Any] = []
         open_file_count = 0
         for _ in range(num_files):
-            with NamedTemporaryFile() as f:
-                # add file to a list so that it doesn't get GC-d
-                files.append(f.file)  # type: ignore
-                open_file_count += 1
+            # add file to a list so that it doesn't get GC-d
+            files.append(NamedTemporaryFile())  # type: ignore
+            open_file_count += 1
     except IOError as ioe:
         print('Caught', ioe)
         return open_file_count
